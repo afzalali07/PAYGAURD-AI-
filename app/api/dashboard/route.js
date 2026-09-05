@@ -1,0 +1,3 @@
+import {NextResponse} from 'next/server';import {allTransactions} from '@/lib/store';
+export const dynamic='force-dynamic';
+export async function GET(){const tx=await allTransactions(),completed=tx.filter(x=>x.paymentStatus==='completed');return NextResponse.json({stats:{total:tx.length,amount:completed.reduce((s,x)=>s+x.amount,0),safe:tx.filter(x=>x.riskLevel==='LOW').length,suspicious:tx.filter(x=>x.riskLevel!=='LOW').length,high:tx.filter(x=>x.riskLevel==='HIGH').length,prevented:tx.filter(x=>x.paymentStatus==='prevented').reduce((s,x)=>s+x.amount,0)},distribution:{LOW:tx.filter(x=>x.riskLevel==='LOW').length,MEDIUM:tx.filter(x=>x.riskLevel==='MEDIUM').length,HIGH:tx.filter(x=>x.riskLevel==='HIGH').length},recent:tx.slice(0,6)})}

@@ -1,0 +1,2 @@
+import {NextResponse} from 'next/server';
+export async function GET(){try{const r=await fetch(`${process.env.ML_SERVICE_URL||'http://localhost:8000'}/metrics`,{cache:'no-store',signal:AbortSignal.timeout(2500)});if(r.ok)return NextResponse.json({...await r.json(),live:true})}catch{}return NextResponse.json({available:false,message:'Start the ML service to view metrics calculated from its held-out test dataset. Risk analysis remains available through the fallback engine.',live:false})}

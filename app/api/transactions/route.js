@@ -1,0 +1,4 @@
+import {NextResponse} from 'next/server';import {allTransactions,saveTransaction} from '@/lib/store';
+export const dynamic='force-dynamic';
+export async function GET(){return NextResponse.json(await allTransactions())}
+export async function POST(req){try{const d=await req.json();if(!d.analysis||!['completed','prevented','failed'].includes(d.paymentStatus))return NextResponse.json({error:'Invalid transaction result.'},{status:400});const a=d.analysis;const saved=await saveTransaction({beneficiary:a.beneficiary,amount:a.amount,purpose:a.purpose,riskScore:a.riskScore,riskLevel:a.riskLevel,ruleRiskScore:a.ruleRiskScore,mlAnomalyScore:a.mlAnomalyScore,isAnomaly:a.isAnomaly,riskReasons:a.riskReasons,aiExplanation:a.aiExplanation,paymentStatus:d.paymentStatus,razorpayOrderId:d.razorpayOrderId,razorpayPaymentId:d.razorpayPaymentId});return NextResponse.json(saved,{status:201})}catch{return NextResponse.json({error:'Could not save the transaction.'},{status:500})}}

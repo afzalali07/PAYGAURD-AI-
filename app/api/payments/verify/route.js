@@ -1,0 +1,2 @@
+import {NextResponse} from 'next/server';import crypto from 'crypto';
+export async function POST(req){const b=await req.json();if(b.demo&&process.env.DEMO_MODE!=='false')return NextResponse.json({verified:true});if(!b.orderId||!b.paymentId||!b.signature||!process.env.RAZORPAY_KEY_SECRET)return NextResponse.json({verified:false},{status:400});const sig=crypto.createHmac('sha256',process.env.RAZORPAY_KEY_SECRET).update(`${b.orderId}|${b.paymentId}`).digest('hex');return NextResponse.json({verified:crypto.timingSafeEqual(Buffer.from(sig),Buffer.from(b.signature))})}
