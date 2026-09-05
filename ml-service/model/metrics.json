@@ -1,14 +1,19 @@
 {
-  "accuracy": 0.9666666666666667,
-  "precision": 0.8692307692307693,
-  "recall": 0.889763779527559,
-  "f1": 0.8793774319066148,
-  "falsePositiveRate": 0.021170610211706103,
+  "modelVersion": "iforest-20260905-143704-b6589f",
+  "trainedAt": "2026-09-05T14:37:04.003643+00:00",
+  "calibratedThreshold": 0.05906635302149137,
+  "contamination": 0.14801829268292682,
+  "feedbackSamples": 0,
+  "accuracy": 0.9780487804878049,
+  "precision": 0.8758620689655172,
+  "recall": 1.0,
+  "f1": 0.9338235294117647,
+  "falsePositiveRate": 0.025974025974025976,
   "confusionMatrix": {
-    "tn": 786,
-    "fp": 17,
-    "fn": 14,
-    "tp": 113
+    "tn": 1350,
+    "fp": 36,
+    "fn": 0,
+    "tp": 254
   },
-  "testSamples": 930
+  "testSamples": 1640
 }

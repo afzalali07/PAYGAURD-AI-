@@ -51,7 +51,9 @@ flowchart TD
 
 ## Risk detection
 
-The API calculates average, median, maximum, historical count, recent frequency, hours since the last payment, beneficiary novelty, similarity to recent payments, and amount-to-average ratio. The understandable rule score contributes 60%; the normalized Isolation Forest anomaly score contributes 40%. Scores are clamped to 0–100: LOW 0–30, MEDIUM 31–60, and HIGH 61–100. Configuration lives in `lib/riskEngine.js`.
+The API builds separate authenticated-user, beneficiary, and merchant-category baselines. It calculates robust amount statistics, hourly and 24-hour velocity, time since the last payment, beneficiary novelty, near-duplicates, payment splitting, account-reference changes, time-of-day deviation, new device/location signals, and amount ratios. Beneficiary references and device identifiers are stored only as SHA-256 fingerprints. The understandable rule score contributes 60%; the calibrated Isolation Forest anomaly score contributes 40%. Scores are clamped to 0–100: LOW 0–30, MEDIUM 31–60, and HIGH 61–100. Thresholds are configurable through `RISK_MEDIUM_THRESHOLD` and `RISK_HIGH_THRESHOLD`.
+
+Every decision stores its exact feature snapshot, calibrated threshold, and immutable model version. Reviewers can label analyzed outcomes as `legitimate` or `suspicious` on the Outcome Review page. After at least five reviews, explicit retraining incorporates legitimate outcomes into the normal baseline and reviewed outcomes into evaluation; a new timestamped model version and genuine metrics are produced. Retraining never occurs silently.
 
 The LLM never computes risk. It receives the completed signals and turns them into two concise sentences. If Gemini or the ML service is unavailable, safe deterministic fallbacks preserve the entire flow.
 
@@ -94,6 +96,8 @@ The first FastAPI start also trains the model automatically if an artifact is ab
 | `ML_SERVICE_URL` | FastAPI URL, default `http://localhost:8000` |
 | `DEMO_MODE` | Enables seeded storage and mock checkout fallbacks |
 | `AUTH_SECRET` | Long random server-only key used to sign login sessions |
+| `RISK_MEDIUM_THRESHOLD` | Optional medium-risk boundary, default `31` |
+| `RISK_HIGH_THRESHOLD` | Optional high-risk boundary, default `61` |
 
 Never place real secrets in client code or commit `.env.local`.
 

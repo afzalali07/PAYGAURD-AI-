@@ -1,4 +1,5 @@
 import './globals.css';
+import './enhancements.css';
 import AppChrome from '@/components/AppChrome';
 import {Suspense} from 'react';
 
